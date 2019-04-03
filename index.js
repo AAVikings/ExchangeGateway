@@ -48,7 +48,7 @@
                 keyId = process.env.KEY_ID
                 cloneId = process.env.CLONE_ID
 
-                let auth = require('../utils/auth')
+                let auth = require('./utils/auth')
                 let authTokenCloud = await auth.authenticate()
                 accessToken = 'Bearer ' + authTokenCloud
             }
