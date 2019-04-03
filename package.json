@@ -1,6 +1,6 @@
 {
-  "name": "@superalgos/exchangegateway.js",
-  "version": "0.0.2",
+  "name": "@superalgos/exchangegateway",
+  "version": "0.0.1",
   "description": "Standarizes the access to different crypto exchanges.",
   "main": "index.js",
   "scripts": {
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Superalgos/ExchangeGateway.js.git"
+    "url": "git+https://github.com/Superalgos/ExchangeGateway.git"
   },
-  "author": "Superalgos, ltd.",
+  "author": "Superalgos.org",
   "license": "SEE LICENSE IN LICENSE.MD",
   "bugs": {
-    "url": "https://github.com/Superalgos/ExchangeGateway.js/issues"
+    "url": "https://github.com/Superalgos/ExchangeGateway/issues"
   },
-  "homepage": "https://github.com/Superalgos/ExchangeGateway.js#readme",
+  "homepage": "https://github.com/Superalgos/ExchangeGateway#readme",
   "dependencies": {
     "apollo-boost": "^0.1.16",
     "assert": "^1.4.1",
