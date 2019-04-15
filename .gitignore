@@ -1,0 +1,11 @@
+
+.vscode/launch.json
+
+\.nyc_output/
+
+coverage/
+
+\.vscode
+node_modules/*
+
+\.env
