@@ -10,8 +10,8 @@
 	"markets": [
 		{
 			"pair": [
-				"BTC",
-				"USDT"
+				"USDT",
+				"BTC"
 			],
 			"maxDecimals": 5,
 			"minimalOrder": {

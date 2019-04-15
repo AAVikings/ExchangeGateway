@@ -10,15 +10,13 @@ const assert = require('assert');
 class BinanceRest {
 
     constructor({
-        key,
-        secret,
+        keyVaultAPI,
         recvWindow = false,
         timeout = 15000,
         disableBeautification = false,
         handleDrift = false
     }) {
-        this.key = key;
-        this.secret = secret;
+        this.keyVaultAPI = keyVaultAPI;
         this.recvWindow = recvWindow;
         this.timeout = timeout;
         this.disableBeautification = disableBeautification;

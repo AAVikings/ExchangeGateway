@@ -1,7 +1,7 @@
 ﻿exports.newAPIClient = function newAPIClient(keyVaultAPI, logger) {
     const Coss = require("./coss");
     const exchangeProperties = require('./cossProperties.json');
-    let API = Coss(keyVaultAPI);
+    let API = Coss(keyVaultAPI, logger);
 
     let thisObject = {
         getTicker: getTicker,
@@ -44,7 +44,6 @@
     *       };
     */
     async function getTicker(pMarket, callBack) {
-
         let params = {}
         params.Symbol = joinCurrencies(pMarket.assetB, pMarket.assetA)
         try {
@@ -52,7 +51,7 @@
             let ticker = {
                 bid: Number(response.bids[0][0]),
                 ask: Number(response.asks[0][0]),
-                last: Number((response.bids[0][0] + response.asks[0][0]) / 2) // TODO Pending review
+                last: (Number(response.bids[0][0]) + Number(response.asks[0][0])) / 2 // TODO Pending review
             };
 
             callBack(global.DEFAULT_OK_RESPONSE.result, ticker)
@@ -74,9 +73,29 @@
      *           datetime
      *       };
      */
-    function getOpenPositions(pMarket, callBack) {
-        // Not implemented yet
-        callBack(global.DEFAULT_OK_RESPONSE)
+    async function getOpenPositions(pMarket, callBack) {
+        try {
+            let params = {}
+            params.Symbol = joinCurrencies(pMarket.assetB, pMarket.assetA)
+            params.Limit = 10
+            var response = await API.getOpenOrders(params)
+            let exchangePositions = []
+            for (let i = 0; i < response.list.length; i++) {
+                let openPosition = {}
+                openPosition.id = response.list[i].order_id
+                openPosition.type = response.list[i].order_side === "SELL" ? "sell" : "buy"
+                openPosition.rate = Number(response.list[i].order_price)
+                openPosition.amountB = Number(response.list[i].order_size)
+                openPosition.amountA = Number(response.list[i].total.substring(0,10))
+                openPosition.date = response.list[i].createTime
+
+                exchangePositions.push(openPosition);
+            }
+
+            callBack(global.DEFAULT_OK_RESPONSE.result, exchangePositions)
+        } catch (error) {
+            callBack(global.DEFAULT_FAIL_RESPONSE.result)
+        }
     }
 
     /*
@@ -92,9 +111,28 @@
      *           datetime
      *       };
      */
-    function getExecutedTrades(pPositionId, callBack) {
-        // Not implemented yet
-        callBack(global.DEFAULT_OK_RESPONSE)
+    async function getExecutedTrades(pPositionId, callBack) {
+        try {
+            let params = {}
+            params.ID = pPositionId
+            var response = await API.getTradeDetails(params)
+            let trades = []
+            for (let i = 0; i < response.length; i++) { // Pending Test
+                let trade = {}
+                trade.id = response[i].order_id
+                trade.type = response[i].order_side === "SELL" ? "sell" : "buy"
+                trade.rate = Number(response[i].order_price)
+                trade.amountB = Number(response[i].order_size)
+                trade.amountA = Number(response[i].total.substring(0,10))
+                trade.date = response[i].createTime
+
+                trades.push(trade);
+            }
+
+            callBack(global.DEFAULT_OK_RESPONSE.result, trades)
+        } catch (error) {
+            callBack(global.DEFAULT_FAIL_RESPONSE.result)
+        }
     }
 
     /*
@@ -102,17 +140,37 @@
      * The orderNumber is returned. String
      */
     function buy(pCurrencyA, pCurrencyB, pRate, pAmount, callBack) {
-        // Not implemented yet
-        callBack(global.DEFAULT_OK_RESPONSE)
+        try {
+            let params = {}
+            params.Symbol = joinCurrencies(pCurrencyB, pCurrencyA)
+            params.Side = 'BUY'
+            params.Price = pRate
+            params.Amount = pAmount
+            var response = await API.placeLimitOrder(params)
+
+            callBack(global.DEFAULT_OK_RESPONSE.result, response.order_id)
+        } catch (error) {
+            callBack(global.DEFAULT_FAIL_RESPONSE.result)
+        }
     }
 
     /*
      * Creates a new sell order.
      * The orderNumber is returned. String
      */
-    function sell(pCurrencyA, pCurrencyB, pRate, pAmount, callBack) {
-        // Not implemented yet
-        callBack(global.DEFAULT_OK_RESPONSE)
+    async function sell(pCurrencyA, pCurrencyB, pRate, pAmount, callBack) {
+        try {
+            let params = {}
+            params.Symbol = joinCurrencies(pCurrencyB, pCurrencyA)
+            params.Side = 'SELL'
+            params.Price = pRate
+            params.Amount = pAmount
+            var response = await API.placeLimitOrder(params)
+
+            callBack(global.DEFAULT_OK_RESPONSE.result, response.order_id)
+        } catch (error) {
+            callBack(global.DEFAULT_FAIL_RESPONSE.result)
+        }
     }
 
     /*
@@ -139,7 +197,6 @@
      *       };
      */
     async function getPublicTradeHistory(assetA, assetB, startTime, endTime, callBack) {
-
         let params = {}
         params.Symbol = joinCurrencies(assetB, assetA)
         try {
