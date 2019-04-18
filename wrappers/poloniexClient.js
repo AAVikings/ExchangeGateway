@@ -86,6 +86,9 @@
         const handle = (err, response) => {
             let ticker;
             let market = joinCurrencies(pMarket.assetA, pMarket.assetB);
+            if (response[market] === undefined){
+                callBack(global.DEFAULT_RETRY_RESPONSE);
+            }
             if (err.result === global.DEFAULT_OK_RESPONSE.result) {
                 ticker = {
                     bid: Number(response[market].highestBid),
