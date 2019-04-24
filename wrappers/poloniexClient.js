@@ -1,7 +1,7 @@
 ﻿exports.newAPIClient = function newAPIClient(keyVaultAPI, logger) {
 
     const FULL_LOG = true;
-    const LOG_FILE_CONTENT = false;
+    const LOG_FILE_CONTENT = true;
     const MODULE_NAME = "poloniexClient";
 
     const retry = require('../exchangeUtils').retry;
@@ -86,9 +86,6 @@
         const handle = (err, response) => {
             let ticker;
             let market = joinCurrencies(pMarket.assetA, pMarket.assetB);
-            if (response[market] === undefined){
-                callBack(global.DEFAULT_RETRY_RESPONSE);
-            }
             if (err.result === global.DEFAULT_OK_RESPONSE.result) {
                 ticker = {
                     bid: Number(response[market].highestBid),
@@ -303,7 +300,7 @@
                 if (exchangeErr) {
                     error = global.DEFAULT_FAIL_RESPONSE;
 
-                    if (includes(exchangeErr.code, recoverableErrors)) {
+                    if (includes(exchangeErr.code, recoverableErrors) || includes(exchangeErr, recoverableErrors)) {
                         error.notFatal = true;
                     }
                 } else if (!exchangeResponse || exchangeResponse === undefined) {

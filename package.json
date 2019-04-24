@@ -1,6 +1,6 @@
 {
   "name": "@superalgos/exchange-gateway",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Standarizes the access to different crypto exchanges.",
   "main": "index.js",
   "scripts": {
