@@ -36,7 +36,8 @@
         'Connection timed out',
         'Connection Error',
         'Order not found, or you are not the person who placed it.',
-        'ETIMEDOUT'
+        'ETIMEDOUT',
+        'EAI_AGAIN'
     ];
 
     let API = new Poloniex(keyVaultAPI);
