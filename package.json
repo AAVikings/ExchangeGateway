@@ -1,38 +1,31 @@
 {
   "name": "@superalgos/exchange-gateway",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Standarizes the access to different crypto exchanges.",
-  "main": "index.js",
-  "scripts": {
-    "test": "./node_modules/.bin/mocha --reporter spec"
-  },
+  "author": "Superalgos, ltd.",
+  "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Superalgos/ExchangeGateway.git"
   },
-  "author": "Superalgos.org",
-  "license": "SEE LICENSE IN LICENSE.MD",
-  "bugs": {
-    "url": "https://github.com/Superalgos/ExchangeGateway/issues"
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha --reporter spec"
   },
-  "homepage": "https://github.com/Superalgos/ExchangeGateway#readme",
-  "dependencies": {
-    "apollo-boost": "^0.1.16",
+  "devDependencies": {
     "assert": "^1.4.1",
+    "mocha": "^6.1.4",
+    "chai": "^4.2.0"
+  },
+  "dependencies": {
     "axios": "^0.18.0",
-    "azure-storage": "^2.8.2",
-    "chai": "^4.2.0",
     "dotenv": "^6.0.0",
-    "graphql": "^14.0.2",
-    "jsonwebtoken": "^8.4.0",
     "lodash": "^4.17.11",
-    "mocha": "^6.0.2",
-    "nodemailer": "^4.6.8",
     "nonce": "^1.0.4",
     "querystring": "^0.2.0",
+    "request": "^2.88.0",
     "retry": "^0.12.0",
     "superagent": "^5.0.2",
-    "underscore": "^1.9.1",
-    "winston": "^3.1.0"
+    "underscore": "^1.9.1"
   }
 }
