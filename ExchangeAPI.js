@@ -45,10 +45,7 @@
             if (global.CURRENT_EXECUTION_AT === "Node") {
                 keyId = process.env.KEY_ID
                 cloneId = process.env.CLONE_ID
-
-                let auth = require('./utils/auth')
-                let authTokenCloud = await auth.authenticate()
-                accessToken = 'Bearer ' + authTokenCloud
+                accessToken = process.env.ACCESS_TOKEN
             }
 
             let keyVaultAPI = createKeyVaultAPIClient(accessToken, keyId, cloneId)
@@ -68,7 +65,7 @@
         const keyVaultAPI = {}
         keyVaultAPI.signTransaction = function (transaction, next) {
             axios({
-                url: global.GATEWAY_ENDPOINT,
+                url: process.env.KEY_VAULT_ENDPOINT || global.GATEWAY_ENDPOINT,
                 method: 'post',
                 data: {
                     query: `
@@ -87,9 +84,8 @@
                     }
                 },
                 headers: {
-                    authorization: accessToken
+                    access_token: accessToken
                 }
-
             }).then(res => {
                 if (res.errors) {
                     next(undefined, 'Error from graphql: ' + res.errors);
