@@ -112,6 +112,4 @@ exports.setGlobals = function () {
         USDT_BTC: "USDT_BTC",
         BTC_USDT: "BTC_USDT"
     }
-
-    global.GATEWAY_ENDPOINT = process.env.GATEWAY_ENDPOINT
 }
