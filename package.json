@@ -1,6 +1,6 @@
 {
   "name": "@superalgos/exchange-gateway",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Standarizes the access to different crypto exchanges.",
   "author": "Superalgos, ltd.",
   "license": "Apache-2.0",

@@ -59,7 +59,7 @@
         const keyVaultAPI = {}
         keyVaultAPI.signTransaction = function (transaction, next) {
             axios({
-                url: process.env.KEY_VAULT_ENDPOINT || process.env.GATEWAY_ENDPOINT_K8S,
+                url: process.env.GATEWAY_ENDPOINT_K8S,
                 method: 'post',
                 data: {
                     query: `
