@@ -32,7 +32,7 @@
 
             logInfo("Initialize -> Entering function.");
 
-            let botExchange, accessToken, keyId, cloneId
+            let botExchange
             if (exchangeName === undefined) {
                 botExchange = 'Poloniex'; // Default Value
             } else {
@@ -42,13 +42,7 @@
             let exchange = botExchange.toLowerCase() + 'Client.js';
             let api = require('./wrappers/' + exchange);
 
-            if (global.CURRENT_EXECUTION_AT === "Node") {
-                keyId = process.env.KEY_ID
-                cloneId = process.env.CLONE_ID
-                accessToken = process.env.ACCESS_TOKEN
-            }
-
-            let keyVaultAPI = createKeyVaultAPIClient(accessToken, keyId, cloneId)
+            let keyVaultAPI = createKeyVaultAPIClient()
             apiClient = api.newAPIClient(keyVaultAPI, logger);
 
             callBackFunction(global.DEFAULT_OK_RESPONSE);
@@ -59,13 +53,13 @@
         }
     }
 
-    function createKeyVaultAPIClient(accessToken, keyId, cloneId) {
+    function createKeyVaultAPIClient() {
         logInfo("createKeyVaultAPIClient -> Entering function.");
 
         const keyVaultAPI = {}
         keyVaultAPI.signTransaction = function (transaction, next) {
             axios({
-                url: process.env.KEY_VAULT_ENDPOINT || global.GATEWAY_ENDPOINT,
+                url: process.env.GATEWAY_ENDPOINT_K8S,
                 method: 'post',
                 data: {
                     query: `
@@ -79,12 +73,12 @@
                     `,
                     variables: {
                         transaction: transaction,
-                        keyId: keyId,
-                        cloneId: cloneId
+                        keyId: process.env.KEY_ID,
+                        cloneId: process.env.CLONE_ID
                     }
                 },
                 headers: {
-                    access_token: accessToken
+                    access_token: process.env.ACCESS_TOKEN
                 }
             }).then(res => {
                 if (res.errors) {

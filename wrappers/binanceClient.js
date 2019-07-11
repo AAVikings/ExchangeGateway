@@ -6,7 +6,6 @@
 
     const retry = require('../exchangeUtils').retry;
     const includes = require('../exchangeUtils').includes;
-    const _ = require('lodash');
     const Binance = require("./binance");
     const exchangeProperties = require('./poloniexProperties.json');
 

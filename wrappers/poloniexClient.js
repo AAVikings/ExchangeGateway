@@ -1,12 +1,11 @@
 ﻿exports.newAPIClient = function newAPIClient(keyVaultAPI, logger) {
 
     const FULL_LOG = true;
-    const LOG_FILE_CONTENT = true;
+    const LOG_FILE_CONTENT = false;
     const MODULE_NAME = "poloniexClient";
 
     const retry = require('../exchangeUtils').retry;
     const includes = require('../exchangeUtils').includes;
-    const _ = require('lodash');
     const Poloniex = require("./poloniex");
     const exchangeProperties = require('./poloniexProperties.json');
 
