@@ -1,7 +1,7 @@
 ﻿exports.newAPIClient = function newAPIClient(keyVaultAPI, logger) {
 
     const FULL_LOG = true;
-    const LOG_FILE_CONTENT = false;
+    const LOG_FILE_CONTENT = true;
     const MODULE_NAME = "poloniexClient";
 
     const retry = require('../exchangeUtils').retry;
@@ -72,15 +72,15 @@
         return exchangeProperties;
     }
 
-     /*
-     * Returns the price for a given pair of assets.
-     * The object returned is an array of trades:
-     * ticker = {
-     *           bid, Number
-     *           ask, Number
-     *           last Number
-     *       };
-     */
+    /*
+    * Returns the price for a given pair of assets.
+    * The object returned is an array of trades:
+    * ticker = {
+    *           bid, Number
+    *           ask, Number
+    *           last Number
+    *       };
+    */
     function getTicker(pMarket, callBack) {
 
         const handle = (err, response) => {
@@ -289,15 +289,11 @@
             let error;
 
             /* This function analizes the different situations we might encounter trying to access Poloniex and returns appropiate standard errors. */
-
-            let stringExchangeErr = JSON.stringify(exchangeErr);
-            let stringExchangeResponse = JSON.stringify(exchangeResponse);
-
             try {
-                if (FULL_LOG === true) { logger.write(MODULE_NAME, "[INFO] analizeResponse -> exchangeErr = " + stringExchangeErr); }
-                if (LOG_FILE_CONTENT === true) { logger.write(MODULE_NAME, "[INFO] analizeResponse -> exchangeResponse = " + stringExchangeResponse); }
-
                 if (exchangeErr) {
+                    if (FULL_LOG === true) { logger.write(MODULE_NAME, "[INFO] analizeResponse -> exchangeErr = " + JSON.stringify(exchangeErr)); }
+                    if (LOG_FILE_CONTENT === true) { logger.write(MODULE_NAME, "[INFO] analizeResponse -> exchangeResponse = " + JSON.stringify(exchangeResponse)); }
+
                     error = global.DEFAULT_FAIL_RESPONSE;
 
                     if (includes(exchangeErr.code, recoverableErrors) || includes(exchangeErr, recoverableErrors)) {
