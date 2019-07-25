@@ -1,11 +1,5 @@
 ﻿exports.newExchangeAPI = function newExchangeAPI(logger, exchangeName) {
-
-    /*
-
-    This module allows trading bots to connect to the exchange and do trading operations on it.
-
-    */
-    const _ = require('lodash');
+    // This module allows trading bots to connect to the exchange and do trading operations on it.
     const isValidOrder = require('./exchangeUtils').isValidOrder;
     const axios = require('axios');
     let MODULE_NAME = "Exchange API";
