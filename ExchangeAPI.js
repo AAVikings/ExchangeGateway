@@ -5,11 +5,12 @@
     This module allows trading bots to connect to the exchange and do trading operations on it.
 
     */
-    const _ = require('lodash')
-    const isValidOrder = require('./exchangeUtils').isValidOrder
-    const axios = require('axios')
+    const _ = require('lodash');
+    const isValidOrder = require('./exchangeUtils').isValidOrder;
+    const axios = require('axios');
     let MODULE_NAME = "Exchange API";
-    let LOG_INFO = true
+    let LOG_INFO = true;
+    let apiClient;
 
     let thisObject = {
         initialize: initialize,
@@ -23,23 +24,18 @@
         getMaxDecimalPositions: getMaxDecimalPositions
     };
 
-    let apiClient;
-
     return thisObject;
 
-    async function initialize(callBackFunction) {
+    function initialize(callBackFunction) {
         try {
 
             logInfo("Initialize -> Entering function.");
 
-            let botExchange
             if (exchangeName === undefined) {
                 botExchange = 'Poloniex'; // Default Value
-            } else {
-                botExchange = exchangeName;
             }
 
-            let exchange = botExchange.toLowerCase() + 'Client.js';
+            let exchange = exchangeName.toLowerCase() + 'Client.js';
             let api = require('./wrappers/' + exchange);
 
             let keyVaultAPI = createKeyVaultAPIClient()
@@ -78,7 +74,7 @@
                     }
                 },
                 headers: {
-                    access_token: process.env.ACCESS_TOKEN
+                    keyvault: process.env.ACCESS_TOKEN
                 }
             }).then(res => {
                 if (res.errors) {
@@ -137,16 +133,9 @@
      * Return number of decimals for the current market
      */
     function getExchangeProperties() {
-        try {
+        logInfo("getExchangeProperties -> Entering function.");
 
-            logInfo("getExchangeProperties -> Entering function.");
-
-            return apiClient.getExchangeProperties();
-
-        } catch (err) {
-            logError("getExchangeProperties -> err = " + err.message);
-            callBack(global.DEFAULT_FAIL_RESPONSE);
-        }
+        return apiClient.getExchangeProperties();
     }
 
     /*
