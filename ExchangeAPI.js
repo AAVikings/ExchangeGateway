@@ -28,7 +28,6 @@
 
     function initialize(callBackFunction) {
         try {
-
             logInfo("Initialize -> Entering function.");
 
             if (exchangeName === undefined) {
@@ -42,9 +41,8 @@
             apiClient = api.newAPIClient(keyVaultAPI, logger);
 
             callBackFunction(global.DEFAULT_OK_RESPONSE);
-
         } catch (err) {
-            logError("initialize -> err = " + err.stack);
+            logError("Initialize -> err = " + err.stack);
             callBackFunction(global.DEFAULT_FAIL_RESPONSE);
         }
     }
@@ -97,15 +95,7 @@
     }
 
     /*
-     *  Position Object = {
-     *           id,        String
-     *           type,      String
-     *           rate,      Number
-     *           amountA,   Number
-     *           amountB,   Number
-     *           fee,       Number
-     *           datetime   Date
-     *       };
+     *  Fixing decimal positions to exchange configuration.
      */
     function truncDecimals(pFloatValue) {
         let decimals = getMaxDecimalPositions();
@@ -123,10 +113,13 @@
      * Return number of decimals for the current market
      */
     function getMarketConfig() {
-        return _.find(getExchangeProperties().markets, (p) => {
-            return _.first(p.pair) === global.MARKET.assetA.toUpperCase() &&
-                _.last(p.pair) === global.MARKET.assetB.toUpperCase();
-        });
+        let markets = getExchangeProperties().markets
+        for (let i = 0; i < markets.length; i++) {
+            const market = markets[i];
+            if (market.pair[0] === global.MARKET.assetA.toUpperCase() && market.pair[1] === global.MARKET.assetB.toUpperCase()) {
+                return market;
+            }
+        }
     }
 
     /*
@@ -134,7 +127,6 @@
      */
     function getExchangeProperties() {
         logInfo("getExchangeProperties -> Entering function.");
-
         return apiClient.getExchangeProperties();
     }
 
@@ -149,11 +141,8 @@
      */
     function getTicker(pMarket, callBack) {
         try {
-
             logInfo("getTicker -> Entering function.");
-
             apiClient.getTicker(pMarket, callBack);
-
         } catch (err) {
             logError("getTicker -> err = " + err.message);
             callBack(global.DEFAULT_FAIL_RESPONSE);
@@ -167,12 +156,8 @@
      */
     function getOpenPositions(pMarket, callBack) {
         try {
-
-            logInfo("getOpenPositions -> Entering function.");
-            logInfo("getOpenPositions -> pMarket = " + JSON.stringify(pMarket));
-
+            logInfo("getOpenPositions -> Entering function. pMarket = " + JSON.stringify(pMarket));
             apiClient.getOpenPositions(pMarket, callBack);
-
         } catch (err) {
             logError("getOpenPositions -> Error = " + err.message);
             callBack(global.DEFAULT_FAIL_RESPONSE);
@@ -185,12 +170,8 @@
      */
     function getExecutedTrades(pPositionId, callBack) {
         try {
-
-            logInfo("getExecutedTrades -> Entering function.");
-            logInfo("getExecutedTrades -> pPositionId = " + pPositionId);
-
+            logInfo("getExecutedTrades -> Entering function. pPositionId = " + pPositionId);
             apiClient.getExecutedTrades(pPositionId, callBack);
-
         } catch (err) {
             logError("getExecutedTrades -> Error = " + err.message);
             callBack(global.DEFAULT_FAIL_RESPONSE);
@@ -249,13 +230,11 @@
      */
     function movePosition(pPosition, pNewRate, pNewAmountB, callBack) {
         try {
-
             logInfo("movePosition -> Entering function.");
             logInfo("movePosition -> pPosition = " + JSON.stringify(pPosition));
             logInfo("movePosition -> pNewRate = " + truncDecimals(pNewRate));
 
             apiClient.movePosition(pPosition, truncDecimals(pNewRate), truncDecimals(pNewAmountB), callBack);
-
         } catch (err) {
             logError("movePosition -> err = " + err.message);
             callBack(global.DEFAULT_FAIL_RESPONSE);
@@ -278,11 +257,8 @@
      */
     function getPublicTradeHistory(assetA, assetB, startTime, endTime, callBack) {
         try {
-
             logInfo("getTradeHistory -> Entering function.");
-
             apiClient.getPublicTradeHistory(assetA, assetB, startTime, endTime, callBack);
-
         } catch (err) {
             logError("getTradeHistory -> err = " + err.message);
             callBack(global.DEFAULT_FAIL_RESPONSE);
