@@ -38,9 +38,7 @@
         sell: sell,
         movePosition: movePosition,
         getPublicTradeHistory: getPublicTradeHistory,
-        getExchangeProperties: getExchangeProperties,
-        isValidPrice: isValidPrice,
-        isValidLot: isValidLot
+        getExchangeProperties: getExchangeProperties
     };
 
     return thisObject;
@@ -288,14 +286,6 @@
 
 	if (FULL_LOG === true) { logger.write(MODULE_NAME, "[INFO] getPublicTradeHistory -> Not implemented yet."); }
         callBack(global.DEFAULT_FAIL_RESPONSE);
-    }
-
-    function isValidPrice(price) {
-        return price >= market.minimalOrder.price;
-    }
-
-    function isValidLot(price, amount) {
-        return amount * price >= market.minimalOrder.order;
     }
 
     function analizeResponse(callBack) {

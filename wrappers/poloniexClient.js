@@ -49,8 +49,7 @@
         sell: sell,
         movePosition: movePosition,
         getPublicTradeHistory: getPublicTradeHistory,
-        getExchangeProperties: getExchangeProperties,
-        isValidLot: isValidLot
+        getExchangeProperties: getExchangeProperties
     };
 
     return thisObject;
@@ -279,10 +278,6 @@
         retry(null, fetch, handle);
     }
 
-    function isValidLot(price, amount) {
-        return amount * price >= 0.0001;
-    }
-
     function analizeResponse(callBack) {
 
         return (exchangeErr, exchangeResponse) => {
@@ -335,7 +330,7 @@
                 return callBack(error, exchangeResponse);
 
             } catch (err) {
-                logger.write(MODULE_NAME, "[ERROR] analizeResponse -> err.message = " + err.message);
+                logger.write(MODULE_NAME, "[ERROR] analizeResponse -> err.message = " + JSON.stringify(err));
                 return callBack(global.DEFAULT_FAIL_RESPONSE, exchangeResponse);
             }
         }

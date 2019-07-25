@@ -6,7 +6,8 @@ module.exports = (function () {
 
     // Module dependencies
     var request = require('request'),
-        nonce = require('nonce')();
+        nonce = require('nonce')(),
+        crypto = require('crypto');
 
     // Constants
     var version = '0.0.9',
@@ -36,8 +37,17 @@ module.exports = (function () {
             paramString = Object.keys(parameters).map(function (param) {
                 return encodeURIComponent(param) + '=' + encodeURIComponent(parameters[param]);
             }).join('&');
-            
-            keyVaultAPI.signTransaction(paramString, next);
+
+            if (keyVaultAPI) {
+                keyVaultAPI.signTransaction(paramString, next);
+            } else {
+                const signedMessage = crypto.createHmac('sha512', process.env.SECRET).update(paramString).digest('hex');
+                let signature = {
+                    Key: process.env.KEY,
+                    Sign: signedMessage
+                };
+                next(signature);
+            }
         };
     }
 
@@ -116,9 +126,8 @@ module.exports = (function () {
                 form: parameters
             };
 
-            let headers = this._getPrivateHeaders(parameters, next)
-
             let thisObject = this
+            this._getPrivateHeaders(parameters, next)
 
             function next(pHeaders, error) {
                 if (!error) {
@@ -127,7 +136,6 @@ module.exports = (function () {
                 } else {
                     callback(error);
                 }
-                
             }
         },
 

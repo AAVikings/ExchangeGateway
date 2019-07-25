@@ -1,6 +1,5 @@
 ﻿exports.newExchangeAPI = function newExchangeAPI(logger, exchangeName) {
     // This module allows trading bots to connect to the exchange and do trading operations on it.
-    const isValidOrder = require('./exchangeUtils').isValidOrder;
     const axios = require('axios');
     let MODULE_NAME = "Exchange API";
     let LOG_INFO = true;
@@ -31,7 +30,10 @@
             let exchange = exchangeName.toLowerCase() + 'Client.js';
             let api = require('./wrappers/' + exchange);
 
-            let keyVaultAPI = createKeyVaultAPIClient()
+            let keyVaultAPI;
+            if (JSON.parse(process.env.USE_KEYVAULT)) {
+                keyVaultAPI = createKeyVaultAPIClient();
+            }
             apiClient = api.newAPIClient(keyVaultAPI, logger);
 
             callBackFunction(global.DEFAULT_OK_RESPONSE);
@@ -120,7 +122,6 @@
      * Return number of decimals for the current market
      */
     function getExchangeProperties() {
-        logInfo("getExchangeProperties -> Entering function.");
         return apiClient.getExchangeProperties();
     }
 
@@ -178,42 +179,28 @@
      */
     function putPosition(pMarket, pType, pRate, pAmountA, pAmountB, callBack) {
         try {
-
             logInfo("putPosition -> Entering function.");
-            logInfo("putPosition -> pMarket = " + JSON.stringify(pMarket));
+
+            let rate = truncDecimals(pRate);
+            let amountA = truncDecimals(pAmountA);
+            let amountB = truncDecimals(pAmountB);
+
+            logInfo("putPosition -> pMarket = " + pMarket.assetA + "_" + pMarket.assetB);
             logInfo("putPosition -> pType = " + pType);
-            logInfo("putPosition -> pRate = " + truncDecimals(pRate));
-            logInfo("putPosition -> pAmountA = " + truncDecimals(pAmountA));
-            logInfo("putPosition -> pAmountB = " + truncDecimals(pAmountB));
+            logInfo("putPosition -> pRate = " + rate);
+            logInfo("putPosition -> pAmountA = " + amountA);
+            logInfo("putPosition -> pAmountB = " + amountB);
 
-            let check = isValidOrder({
-                market: getMarketConfig(),
-                api: apiClient,
-                amount: truncDecimals(pAmountB),
-                price: truncDecimals(pRate)
-            });
-
-            if (check.valid) {
-                if (pType === "buy") {
-                    apiClient.buy(pMarket.assetA, pMarket.assetB, truncDecimals(pRate), truncDecimals(pAmountB), callBack);
-                    return;
-                }
-
-                if (pType === "sell") {
-                    apiClient.sell(pMarket.assetA, pMarket.assetB, truncDecimals(pRate), truncDecimals(pAmountB), callBack);
-                    return;
-                }
-
+            if (pType === "buy") {
+                apiClient.buy(pMarket.assetA, pMarket.assetB, rate, amountB, callBack);
+            } else if (pType === "sell") {
+                apiClient.sell(pMarket.assetA, pMarket.assetB, rate, amountB, callBack);
+            } else {
                 logError("putPosition -> pType must be either 'buy' or 'sell'.");
                 callBack(global.DEFAULT_FAIL_RESPONSE);
-
-            } else {
-                logError("putPosition -> The order is invalid: " + check.reason);
-                callBack(global.DEFAULT_FAIL_RESPONSE);
             }
-
         } catch (err) {
-            logError("putPosition -> err = " + err.message);
+            logError("putPosition -> err = " +  JSON.stringify(err.stack) || err.message);
             callBack(global.DEFAULT_FAIL_RESPONSE);
         }
     }

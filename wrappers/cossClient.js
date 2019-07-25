@@ -11,8 +11,7 @@
         sell: sell,
         movePosition: movePosition,
         getPublicTradeHistory: getPublicTradeHistory,
-        getExchangeProperties: getExchangeProperties,
-        isValidLot: isValidLot
+        getExchangeProperties: getExchangeProperties
     };
 
     return thisObject;
@@ -227,9 +226,5 @@
         } catch (error) {
             callBack(global.DEFAULT_FAIL_RESPONSE);
         }
-    }
-
-    function isValidLot(price, amount) {
-        return amount * price >= 0.0001;
     }
 }
